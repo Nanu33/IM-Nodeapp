@@ -1,0 +1,45 @@
+{
+	"info": {
+		"_postman_id": "e6d0f335-58b7-4b5e-96b2-6598c371cbfd",
+		"name": "Self-Service",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "http://localhost:8080/api/v1/bawag/link?groupby=deal789&username=wsfs@intainft.com&pwd=Inta!n@123",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/bawag/link?groupby=deal789&username=wsfs@intainft.com&pwd=Inta!n@123",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"bawag",
+						"link"
+					],
+					"query": [
+						{
+							"key": "groupby",
+							"value": "deal789"
+						},
+						{
+							"key": "username",
+							"value": "wsfs@intainft.com"
+						},
+						{
+							"key": "pwd",
+							"value": "Inta!n@123"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

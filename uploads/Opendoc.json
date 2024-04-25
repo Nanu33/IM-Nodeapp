@@ -1,0 +1,303 @@
+{
+	"info": {
+		"_postman_id": "af8c888c-ec46-448b-9b18-ed6d9438328e",
+		"name": "Datastore",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "30647703"
+	},
+	"item": [
+		{
+			"name": "GetCustomerSpaces",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"var spaces = jsonData.spaces.spaces",
+							"for (var key in spaces) {",
+							"    if (spaces[key].hasOwnProperty('spaceName')) {",
+							"       if(spaces[key][\"spaceName\"] == \"bdb-postgresql\") {",
+							"           pm.environment.set(\"password\", 'Admin@123');",
+							"           pm.environment.set(\"user_email\", 'bijeeshop@gmail.com');",
+							"           pm.environment.set(\"customerKey\", spaces[key][\"customerKey\"]);",
+							"       }",
+							"    }",
+							"",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userid",
+							"value": "manirathinavelu.m@bdb.ai",
+							"type": "text"
+						},
+						{
+							"key": "authType",
+							"value": "ep",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://analytics.intainabs.com/cxf/auth/getCustomerSpaces",
+					"protocol": "https",
+					"host": [
+						"analytics",
+						"intainabs",
+						"com"
+					],
+					"path": [
+						"cxf",
+						"auth",
+						"getCustomerSpaces"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "authenticateuser",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"pm.environment.set(\"bdbuserid\", jsonData.users.user.id);",
+							"pm.environment.set(\"MDS_URL\",\"http://10.10.28.109:9000\")",
+							"pm.environment.set(\"bdbToken\", jsonData.users.authToken);",
+							"pm.environment.set(\"bdbspacekey\", jsonData.users.user.spaceKey);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userid",
+							"value": "manirathinavelu.m@bdb.ai",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "admin@123",
+							"type": "text"
+						},
+						{
+							"key": "authType",
+							"value": "ep",
+							"type": "text"
+						},
+						{
+							"key": "customerkey",
+							"value": "BizViz_5DUNLU",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://analytics.intainabs.com/cxf/auth/authenticateuser",
+					"protocol": "https",
+					"host": [
+						"analytics",
+						"intainabs",
+						"com"
+					],
+					"path": [
+						"cxf",
+						"auth",
+						"authenticateuser"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Sharable link",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					},
+					{
+						"key": "Authtoken",
+						"value": "eyJzZXNpb25WYWxpZGF0ZSI6IiIsImRhdGUiOiIiLCJ1c2VyIjoiMzAxNDY1OV8xIiwiYWN0aXZlU2Vzc2lvbiI6Mywic3BhY2UiOiIxMTExIiwidXNlclNlc3Npb24iOjEsImFsZyI6IkhTMjU2IiwiemlwIjoiR1pJUCJ9.H4sIAAAAAAAAADWTybKiSAAA_8Vz20GxCX0rRdkpS5ZSLgSrUKDsiHTMv8-bw-QpI-_5d0enavdnxzGAFwU5Artfu3FOfkr-NcpETStUGbq_6cCp9FF_d1160kW9zmI3gFWBf2v8qMP_0YKA5cXEPnrSZdtTSoA9KyuYMlbrp9kCKO4Cgxwxi6bnqj6cfmwjwGvxSdTQxaxz-5GH3aYgXLivUTAjzIn37qWGMP3KzlHuz6WKx-GM6s6wz1bBgfap4r2uoZUl5bHVshc3tu5VQgnZNO51CKPmMHh0zHmoUrOw-2ieVhvVQCeP8KLWbRicF7Wiz-l2G3RyS304vNw8A1YXr8yUH6bOZN_lUswuNTkPnQXPnWpRKdnpO2dyv3UfSPou_5T6SQaI5o1oRB6tjSuZUy7z_ba7fmIO6yY8I0nHn4-unPGDqPZzHZVqdOvT0fahPYZ8BdXjEz8V1qCQxxgZHOTHTIH8zVS1bnIV88RsBoj1S3Xhveiqk9m2NXctTM2-SINEqZEghK2SXw4hXXPdrk_ErQ71snTmwDD0QeQIe47tFBNVvgSUZGPXr5B3rMSxdmUJDv_KPM1GXbNA8SEpRn6UtuGpjVmKhAZXEZXTWJbXULw_shxI1kDedPHudDupUs7ffXkRIk79z1PGY-KaLWUx5rICzSjsL8W6DKZMlTyvYd9Evdu-sX_YuwoHKyg4txilFJpvbhHqcozFupOJ8HnX87uk9wYbHo7eRiMmQ4vvEhhByNLWa50yZtlkCJK4uRiLR_ZbeQrGIBeGtLMEn-7Dw8u9Mjz0g0QV1Kr5aqf6GnlLQMxXzFLRD-cMzamHncBYrOY6Oog8Nau3NLnuEcNu6kNJWhcB5y0vEekaa1-Am9PMT3RdNWHrtzi_HD8Q_nY051sQob3oygyC4lim1qzl5KOfXcqiO5_U4lrfF2Yf2j-PVeP48xj4YffPv6aE4oWEAwAA.KYTGyWYkOckHW9pesP65yH8M2LvEp0-B4sUIwwtSz3M",
+						"type": "text"
+					},
+					{
+						"key": "spacekey",
+						"value": "1111",
+						"type": "text"
+					},
+					{
+						"key": "userID",
+						"value": "3014659",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "docId",
+							"value": "2129920",
+							"type": "text"
+						},
+						{
+							"key": "isEditable",
+							"value": "true",
+							"type": "text"
+						},
+						{
+							"key": "spacekey",
+							"value": "1111",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://analytics.demo-iaedge.intainabs.com/cxf/document/getShareableLink",
+					"protocol": "https",
+					"host": [
+						"analytics",
+						"demo-iaedge",
+						"intainabs",
+						"com"
+					],
+					"path": [
+						"cxf",
+						"document",
+						"getShareableLink"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ResetUserSession",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userId",
+							"value": "32770",
+							"type": "text"
+						},
+						{
+							"key": "spacekey",
+							"value": "1113",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://analytics.intainabs.com/cxf/auth/resetUserSession",
+					"protocol": "https",
+					"host": [
+						"analytics",
+						"intainabs",
+						"com"
+					],
+					"path": [
+						"cxf",
+						"auth",
+						"resetUserSession"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "userID",
+						"value": "{{bdbuserid}}"
+					},
+					{
+						"key": "spacekey",
+						"value": "{{bdbspacekey}}"
+					},
+					{
+						"key": "authtoken",
+						"value": "{{bdbToken}}"
+					},
+					{
+						"warning": "This is a duplicate header and will be overridden by the Content-Type header generated by Postman.",
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "userid",
+							"value": "{{bdbuserid}}",
+							"type": "text"
+						},
+						{
+							"key": "token",
+							"value": "{{bdbToken}}",
+							"type": "text"
+						},
+						{
+							"key": "spacekey",
+							"value": "{{bdbspacekey}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "https://analytics.intainabs.com/cxf/auth/logout",
+					"protocol": "https",
+					"host": [
+						"analytics",
+						"intainabs",
+						"com"
+					],
+					"path": [
+						"cxf",
+						"auth",
+						"logout"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
