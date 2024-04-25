@@ -1,0 +1,47 @@
+name: CD - External-app
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  docker_build_push:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Read version from version.txt
+      uses: jaywcjlove/github-action-read-file@main
+      id: customVersion
+      with:
+        path: version.txt
+    - name: Remove the newline and space characters in version
+      run: |
+        : # Fetch the customVersion retrieved from version.txt
+        cv="${{steps.customVersion.outputs.content}}"
+        : # Remove the newline character
+        cv=$(echo $cv | sed 's/\\n//')
+        : # Remove all space characters and add run number
+        cv=$(echo $cv | sed 's/[[:space:]]//g').${{ github.run_number }}
+        : # Transfer to github env
+        echo "CUSTOM_VERSION=$cv" >> "$GITHUB_ENV"    
+    - uses: actions/checkout@v4     
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and Push Docker Image to Docker Registry
+      uses: mr-smithers-excellent/docker-build-push@v6
+      with:
+        image: intainft/ui-testim-cni-vm
+        tags: $CUSTOM_VERSION, latest
+        registry: docker.io
+        dockerfile: Dockerfile
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Pull the image to VM
+      uses: appleboy/ssh-action@v1.0.0
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        script: 
+          sudo docker run -d --name ui -p 81:80 -v /imtestapps/IntainMarkets/uploads:/var/www/html/root_folder/uploads --restart unless-stopped  intainft/ui-testim-cni-vm:$CUSTOM_VERSION
