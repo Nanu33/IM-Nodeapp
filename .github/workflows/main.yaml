@@ -1,7 +1,7 @@
 name: CD - External-app
 on:
   push:
-    branches: [ main ]
+    branches: [ Main ]
 
 jobs:
   docker_build_push:
