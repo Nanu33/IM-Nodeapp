@@ -31,7 +31,7 @@ jobs:
     - name: Build and Push Docker Image to Docker Registry
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
-        image: intainregistry/im-testnetwork-node-app
+        image: intainft/im-testnetwork-node-app
         tags: $CUSTOM_VERSION, latest
         registry: docker.io
         dockerfile: Dockerfile
@@ -45,10 +45,10 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         script: | 
           
-          sudo docker pull intainregistry/im-testnetwork-node-app:$CUSTOM_VERSION
+          sudo docker pull intainft/im-testnetwork-node-app:$CUSTOM_VERSION
           sudo docker stop im-testnetwork-node-app || true
           sudo docker rm im-testnetwork-node-app || true
-          sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainregistry/im-testnetwork-node-app:$CUSTOM_VERSION
+          sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainft/im-testnetwork-node-app:$CUSTOM_VERSION
 
 
 
