@@ -43,6 +43,7 @@ jobs:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
+        port: ${{ secrets.SSH_PORT }}
         script: | 
           
           sudo docker pull intainft/im-testnetwork-node-app:$CUSTOM_VERSION
