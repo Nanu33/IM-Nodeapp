@@ -38,6 +38,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Pull the image to VM
+      if: ${{ !env.ACT }}
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.SSH_HOST }}
