@@ -32,14 +32,14 @@ jobs:
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: intainft/im-testnetwork-node-app
-        tags: $CUSTOM_VERSION, latest
+        tags: $CUSTOM_VERSION
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
     - name: Pull the image to VM
       if: ${{ !env.ACT }}
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
