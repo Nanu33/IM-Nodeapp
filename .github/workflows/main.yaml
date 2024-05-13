@@ -37,16 +37,15 @@ jobs:
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    - name: Pull the image to VM
-      if: ${{ !env.ACT }}
-      uses: appleboy/ssh-action@v1.0.3
+    - name: 'Log into Azure using github secret AZURE_CREDENTIALS'
+      uses: Azure/login@v1
       with:
-        host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: | 
-          
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+    - name: 'Run az commands'
+        run: |
+          az login
+          az ssh vm -n jenkins-vm -g jenkins-rg
           sudo docker pull intainft/im-testnetwork-node-app:$CUSTOM_VERSION
           sudo docker stop im-testnetwork-node-app || true
           sudo docker rm im-testnetwork-node-app || true
@@ -54,3 +53,6 @@ jobs:
 
 
 
+   
+          
+         
