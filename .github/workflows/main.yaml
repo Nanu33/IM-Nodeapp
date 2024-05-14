@@ -37,6 +37,15 @@ jobs:
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+     -name: 'Log into Azure using github secret AZURE_CREDENTIALS'
+      uses: Azure/login@v1
+      with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          enable-AzPSSession: true
+    - name: 'Run az commands'
+        run: |
+          az login
+          az ssh vm -n jenkins-vm -g jenkins-rg
     - name: Pull the image to VM
       if: ${{ !env.ACT }}
       uses: appleboy/ssh-action@v1.0.3
@@ -48,6 +57,6 @@ jobs:
         script: | 
           
           sudo docker pull intainft/im-testnetwork-node-app:$CUSTOM_VERSION
-          sudo docker stop im-testnetwork-node-app || true
-          sudo docker rm im-testnetwork-node-app || true
+          sudo docker stop intainft/im-testnetwork-node-app || true
+          sudo docker rm intainft/im-testnetwork-node-app || true
           sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainft/im-testnetwork-node-app:$CUSTOM_VERSION
