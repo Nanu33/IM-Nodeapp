@@ -12,41 +12,51 @@ jobs:
       id: customVersion
       with:
         path: version.txt
-    - name: Remove the newline and space characters in version
+        
+    - name: Process version string
+      id: process_version
       run: |
-        : # Fetch the customVersion retrieved from version.txt
-        cv="${{steps.customVersion.outputs.content}}"
-        : # Remove the newline character
-        cv=$(echo $cv | sed 's/\\n//')
-        : # Remove all space characters and add run number
-        cv=$(echo $cv | sed 's/[[:space:]]//g').${{ github.run_number }}
-        : # Transfer to github env
-        echo "CUSTOM_VERSION=$cv" >> "$GITHUB_ENV"    
+        # Fetch the customVersion retrieved from version.txt
+        cv="${{ steps.customVersion.outputs.content }}"
+        # Remove the newline character
+        cv=$(echo "$cv" | tr -d '\n')
+        # Remove all space characters and add run number
+        cv=$(echo "$cv" | tr -d ' ').${{ github.run_number }}
+        # Transfer to github env
+        echo "CUSTOM_VERSION=$cv" >> "$GITHUB_ENV"
+
     - uses: actions/checkout@v4     
+
     - name: Login to Docker Hub
-      uses: docker/login-action@v1
+      uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+        
     - name: Build and Push Docker Image to Docker Registry
       uses: mr-smithers-excellent/docker-build-push@v6
       with:
         image: intainft/im-testnetwork-node-app
-        tags: $CUSTOM_VERSION
+        tags: ${{ env.CUSTOM_VERSION }}
         registry: docker.io
         dockerfile: Dockerfile
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
+
     - name: Pull the image to VM
       if: ${{ !env.ACT }}
-      uses: appleboy/ssh-action@v1.0.3
+      uses: appleboy/ssh-action@v0.1.3
       with:
         host: ${{ secrets.SSH_HOST }}
         username: ${{ secrets.SSH_USERNAME }}
         key: ${{ secrets.SSH_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: | 
-   
           sudo docker stop im-node-app || true
           sudo docker rm im-node-app || true
-          sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainft/im-testnetwork-node-app:$CUSTOM_VERSION
+          sudo docker run -d --name im-node-app -p 3005:3005 \
+            -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads \
+            -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads \
+            -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads \
+            -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder \
+            intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }}
