@@ -43,6 +43,20 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
+    - name: Send mail on failure
+      if: failure()
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        secure: true
+        username: ${{ secrets.MAIL_USERNAME }}
+        password: ${{ secrets.MAIL_PASSWORD }}
+        subject: Github Actions Docker Result - Failure
+        to: bharathi.m@intainft.com,narayanan.sp@intainft.com
+        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
+        body: ${{ github.job }} job in workflow ${{ github.workflow }} of ${{ github.repository }} has failed.
+
     - name: Pull the image to VM
       if: ${{ !env.ACT }}
       uses: appleboy/ssh-action@v0.1.3
@@ -60,3 +74,39 @@ jobs:
             -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads \
             -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder \
             intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }}
+
+  notify_success:
+    runs-on: ubuntu-latest
+    needs: docker_build_push
+    if: success()
+    steps:
+    - name: Send success email
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        secure: true
+        username: ${{ secrets.MAIL_USERNAME }}
+        password: ${{ secrets.MAIL_PASSWORD }}
+        subject: Deployment Success
+        to: bharathi.m@intainft.com,narayanan.sp@intainft.com
+        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
+        body: The Docker image intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }} was successfully built and deployed.
+        
+  notify_failure:
+    runs-on: ubuntu-latest
+    needs: docker_build_push
+    if: failure()
+    steps:
+    - name: Send failure email
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        secure: true
+        username: ${{ secrets.MAIL_USERNAME }}
+        password: ${{ secrets.MAIL_PASSWORD }}
+        subject: Deployment Failed
+        to: bharathi.m@intainft.com,narayanan.sp@intainft.com
+        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
+        body: The Docker image intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }} failed to build or deploy.
