@@ -54,7 +54,7 @@ jobs:
         password: ${{ secrets.MAIL_PASSWORD }}
         subject: Github Actions Docker Result - Failure
         to: bharathi.m@intainft.com,narayanan.sp@intainft.com
-        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
+        from: Github Actions ${{ secrets.MAIL_USERNAME }}
         body: ${{ github.job }} job in workflow ${{ github.workflow }} of ${{ github.repository }} has failed.
 
     - name: Pull the image to VM
@@ -88,10 +88,11 @@ jobs:
         secure: true
         username: ${{ secrets.MAIL_USERNAME }}
         password: ${{ secrets.MAIL_PASSWORD }}
-        subject: Deployment Success
+        subject: IM Nodeapp -Deployment success
         to: bharathi.m@intainft.com,narayanan.sp@intainft.com
-        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
-        body: The Docker image intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }} was successfully built and deployed.
+        from: Github Actions ${{ secrets.MAIL_USERNAME }}
+        #body: The Docker image intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }} was successfully built and deployed.
+        body: ${{ github.job }} job in workflow ${{ github.workflow }} of ${{ github.repository }} has ${{ job.status }} 
         
   notify_failure:
     runs-on: ubuntu-latest
@@ -106,7 +107,7 @@ jobs:
         secure: true
         username: ${{ secrets.MAIL_USERNAME }}
         password: ${{ secrets.MAIL_PASSWORD }}
-        subject: Deployment Failed
+        subject: IM Nodeapp - Deployment failure
         to: bharathi.m@intainft.com,narayanan.sp@intainft.com
-        from: Github Actions <${{ secrets.MAIL_USERNAME }}>
+        from: Github Actions ${{ secrets.MAIL_USERNAME }}
         body: The Docker image intainft/im-testnetwork-node-app:${{ env.CUSTOM_VERSION }} failed to build or deploy.
