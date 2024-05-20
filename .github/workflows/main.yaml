@@ -49,4 +49,4 @@ jobs:
    
           sudo docker stop im-node-app || true
           sudo docker rm im-node-app || true
-          sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainft/im-testnetwork-node-app:0.1.28
+          sudo docker run -d  --name im-node-app -p 3005:3005 -v /imtestapps/IntainMarkets/uploads:/opt/node-app/uploads  -v /imtestapps/IntainMarkets/postmapUploads:/opt/node-app/postmapUploads -v /imtestapps/IntainMarkets/servicerUploads:/opt/node-app/servicerUploads -v /imtestapps/IntainMarkets/tempfolder:/opt/node-app/tempfolder intainft/im-testnetwork-node-app:$CUSTOM_VERSION
